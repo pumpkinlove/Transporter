@@ -1,0 +1,180 @@
+package org.ia.transporter.activity;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.ia.transporter.R;
+import org.ia.transporter.adapter.ChatAdapter;
+import org.ia.transporter.domain.Client;
+import org.ia.transporter.domain.TransMessage;
+import org.ia.transporter.events.SocketEvent;
+import org.ia.transporter.events.ToastEvent;
+import org.ia.transporter.utils.Constants;
+import org.ia.transporter.utils.FileUtil;
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.Event;
+import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.ia.transporter.app.MyApplication.me;
+
+@ContentView(R.layout.activity_chat)
+public class ChatActivity extends BaseActivity {
+
+    @ViewInject(R.id.tv_head_middle)    private TextView tv_head_middle;
+    @ViewInject(R.id.tv_head_right)     private TextView tv_head_right;
+    @ViewInject(R.id.tv_head_left)      private TextView tv_head_left;
+
+    @ViewInject(R.id.rv_chat)           private RecyclerView rv_chat;
+
+    @ViewInject(R.id.et_send_message)   private EditText et_send_message;
+
+    private Client client;
+    private ChatAdapter adapter;
+    private List<TransMessage> messageList;
+    private EventBus bus;
+
+    private File file;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);      //全屏显示
+        x.view().inject(this);
+
+        initData();
+        initView();
+        bus.register(this);
+    }
+
+    @Override
+    protected void initData() {
+        bus = EventBus.getDefault();
+        client = (Client) getIntent().getSerializableExtra("client");
+        messageList = new ArrayList<>();
+        adapter = new ChatAdapter(messageList, this);
+    }
+
+    @Override
+    protected void initView() {
+        tv_head_middle.setText(client.getName());
+        tv_head_left.setVisibility(View.VISIBLE);
+        tv_head_right.setVisibility(View.VISIBLE);
+
+        rv_chat.setAdapter(adapter);
+        rv_chat.setLayoutManager(new LinearLayoutManager(this));
+        et_send_message.setOnEditorActionListener(listener);
+    }
+
+    private EditText.OnEditorActionListener listener = new EditText.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+            if (i == EditorInfo.IME_ACTION_DONE) {
+            }
+            return false;
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        bus.unregister(this);
+        super.onDestroy();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onMessageEvent(SocketEvent e) {
+    }
+
+    @Event(R.id.tv_head_right)
+    private void onChooseFile(View view) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");      //设置类型，这里是任意类型
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(Intent.createChooser(intent, "Select a File to transport"), 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 1 :
+                if (resultCode == Activity.RESULT_OK) { //是否选择，没选择就不会继续
+                    Uri uri = data.getData();           //得到uri，将uri转化成file的过程。
+                    String path = FileUtil.getFileAbsolutePath(this, uri);
+                    if (path != null) {
+                        file = new File(path);
+                    } else {
+                        bus.post(new ToastEvent("文件路径为空"));
+                        return;
+                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendFile(file, client);
+                        }
+                    }).start();
+                }
+                break;
+        }
+
+    }
+
+    /** 发送消息 */
+    private void sendMessage(TransMessage message) {
+
+    }
+
+    /** 发送文件 */
+    public void sendFile(File file, Client c) {
+        try {
+            /** 写文件名*/
+            Socket name = new Socket(c.getIp(), Constants.FILE_PORT);
+            OutputStream osName = name.getOutputStream();
+            OutputStreamWriter oswName = new OutputStreamWriter(osName);
+            BufferedWriter bwName = new BufferedWriter(oswName);
+            bwName.write(file.getName());
+            bwName.close();
+            oswName.close();
+            osName.close();
+            name.close();
+
+            /** 写文件内容*/
+            Socket data = new Socket(c.getIp(), Constants.FILE_PORT);
+            OutputStream osData = data.getOutputStream();
+            FileInputStream fis = new FileInputStream(file);
+            int size = -1;
+            byte[] buffer = new byte[1024];
+            while ((size = fis.read(buffer, 0, 1024)) != -1) {
+                osData.write(buffer, 0, size);
+            }
+            osData.close();
+            fis.close();
+            data.close();
+
+        } catch (Exception e) {
+            bus.post(new ToastEvent("发送失败，请确认好友IP是否正确"));
+        }
+    }
+
+}

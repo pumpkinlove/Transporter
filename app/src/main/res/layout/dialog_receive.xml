@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp">
+
+        <TextView
+            android:background="@color/colorPrimaryDark"
+            android:textColor="@color/white"
+            android:paddingStart="10dp"
+            android:text="接收文件"
+            android:textSize="15sp"
+            android:gravity="start|center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <View
+        android:background="@color/gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <LinearLayout
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="140dp">
+
+        <TextView
+            android:id="@+id/rd_content"
+            android:text="有新的文件，是否接收？"
+            android:textSize="15sp"
+            android:textColor="@color/dark"
+            android:gravity="center"
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+        <android.support.v4.widget.ContentLoadingProgressBar
+            android:visibility="gone"
+            android:layout_weight="1"
+            android:id="@+id/pb_receive"
+            android:progressDrawable="@drawable/progress_bar"
+            android:max="100"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+    </LinearLayout>
+
+    <View
+        android:background="@color/gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <LinearLayout
+        android:id="@+id/ll_rd_bottom"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+
+
+        <TextView
+            android:textColor="@color/dark"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:text="接收"
+            android:background="@drawable/white_bg_pink_ripple"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/rd_confirm" />
+
+        <View
+            android:background="@color/gray_light"
+            android:layout_width="1px"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:textColor="@color/red"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:text="忽略"
+            android:background="@drawable/white_bg_pink_ripple"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/rd_cancel" />
+
+    </LinearLayout>
+
+</LinearLayout>

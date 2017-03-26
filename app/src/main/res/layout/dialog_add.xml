@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:text="添加好友"
+        android:background="@color/white"
+        android:textColor="@color/colorPrimary"
+        android:textSize="15sp"
+        android:paddingStart="14dp"
+        android:gravity="start|center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+
+        <TextView
+            android:background="@color/white"
+            android:textColor="@color/dark"
+            android:text="姓名"
+            android:paddingStart="14dp"
+            android:gravity="start|center_vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <EditText
+            android:id="@+id/et_name"
+            android:background="@drawable/white_bg_pink_ripple"
+            android:paddingEnd="14dp"
+            android:gravity="end|center_vertical"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <View
+        android:background="@color/gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+
+        <TextView
+            android:background="@color/white"
+            android:textColor="@color/dark"
+            android:text="IP地址"
+            android:paddingStart="14dp"
+            android:gravity="start|center_vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <EditText
+            android:digits="1234567890."
+            android:inputType="number"
+            android:id="@+id/et_ip"
+            android:background="@drawable/white_bg_pink_ripple"
+            android:paddingEnd="14dp"
+            android:gravity="end|center_vertical"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <View
+        android:background="@color/gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+
+        <TextView
+            android:background="@color/white"
+            android:textColor="@color/dark"
+            android:text="分组"
+            android:paddingStart="14dp"
+            android:gravity="start|center_vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <Spinner
+            android:id="@+id/s_group"
+            android:paddingEnd="14dp"
+            android:gravity="end|center_vertical"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <View
+        android:background="@color/colorPrimaryDark"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:clickable="true"
+            android:id="@+id/tv_confirm"
+            android:background="@drawable/white_bg_pink_ripple"
+            android:text="添加"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <View
+            android:background="@color/colorPrimaryDark"
+            android:layout_width="1px"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:clickable="true"
+            android:id="@+id/tv_cancel"
+            android:background="@drawable/white_bg_pink_ripple"
+            android:text="取消"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

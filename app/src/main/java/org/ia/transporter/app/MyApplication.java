@@ -1,10 +1,6 @@
 package org.ia.transporter.app;
 
 import android.app.Application;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -17,7 +13,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.ia.transporter.R;
-import org.ia.transporter.SocketService;
 import org.ia.transporter.domain.Client;
 import org.ia.transporter.domain.Group;
 import org.ia.transporter.domain.TransMessage;
@@ -78,7 +73,7 @@ public class MyApplication extends Application {
 
     private void init() {
         try {
-            Constants.DEFAULT_PHOTO = Base64Util.bitmaptoString(BitmapFactory.decodeResource(getResources(), R.mipmap.transport));
+            Constants.DEFAULT_PHOTO = Base64Util.bitmaptoString(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
             bus = EventBus.getDefault();
             bus.register(this);
             fileServer = new ServerSocket(Constants.FILE_PORT);
@@ -141,7 +136,8 @@ public class MyApplication extends Application {
             while ((line = bff.readLine()) != null) {
                 buffer.append(line);
             }
-            bus.post(new MsgArriveEvent(g.fromJson(buffer.toString(), TransMessage.class)));
+            TransMessage tMsg = g.fromJson(buffer.toString(), TransMessage.class);
+            bus.post(new MsgArriveEvent(tMsg));
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {

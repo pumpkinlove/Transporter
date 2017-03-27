@@ -112,7 +112,7 @@ public class ChatActivity extends BaseActivity {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");      //设置类型，这里是任意类型
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(Intent.createChooser(intent, "Select a File to transport"), 1);
+        startActivityForResult(Intent.createChooser(intent, "Select a File to ic_launcher"), 1);
     }
 
     @Override

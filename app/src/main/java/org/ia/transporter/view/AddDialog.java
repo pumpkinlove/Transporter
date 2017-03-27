@@ -24,6 +24,7 @@ import org.ia.transporter.domain.TransMessage;
 import org.ia.transporter.events.MsgSendEvent;
 import org.ia.transporter.utils.Constants;
 import org.ia.transporter.utils.DBUtil;
+import org.ia.transporter.utils.DateUtil;
 import org.xutils.ex.DbException;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
@@ -104,7 +105,8 @@ public class AddDialog extends DialogFragment {
         tMsg.setFromClient(MyApplication.me);
         tMsg.setToIP(et_ip.getText().toString());
         tMsg.setToClient(getTargetClient());
-        tMsg.setOpTime(new Date());
+        tMsg.setOpDate(DateUtil.toMonthDay(new Date()));
+        tMsg.setOpTime(DateUtil.toHourMinString(new Date()));
         tMsg.setMessage("好友请求");
         EventBus.getDefault().post(new MsgSendEvent(tMsg));
         dismiss();

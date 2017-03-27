@@ -1,6 +1,10 @@
 package org.ia.transporter.activity;
 
 import android.support.v7.app.AppCompatActivity;
+import android.view.Window;
+import android.view.WindowManager;
+
+import org.ia.transporter.R;
 
 /**
  * Created by Administrator on 2017/1/19 0019.
@@ -12,5 +16,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract void initData();
 
     protected abstract void initView();
+
+    protected void initWindow() {
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+    }
 
 }

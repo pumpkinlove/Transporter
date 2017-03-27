@@ -44,7 +44,7 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
         holder.iv_session_photo.setImageBitmap(Base64Util.stringtoBitmap(tMsg.getFromClient().getPhoto()));
         holder.tv_session_name.setText(tMsg.getFromClient().getName());
         holder.tv_session_info.setText(tMsg.getMessage());
-        holder.tv_session_opTime.setText(DateUtil.toHourMinString(tMsg.getOpTime()));
+        holder.tv_session_opTime.setText(tMsg.getOpTime());
     }
 
     @Override

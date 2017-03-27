@@ -26,9 +26,10 @@
             android:id="@+id/imageView"
             android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:src="@mipmap/transport" />
+            android:src="@mipmap/ic_launcher" />
 
         <LinearLayout
+            android:layout_marginLeft="5dp"
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">

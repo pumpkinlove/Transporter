@@ -20,7 +20,8 @@ public class TransMessage implements Serializable {
                                     private Client fromClient;
                                     private Client toClient;
     @Column(name = "isSelf")        private boolean isSelf;
-    @Column(name = "opTime")        private Date opTime;
+    @Column(name = "opDate")        private String opDate;
+    @Column(name = "opTime")        private String opTime;
 
     public int getId() {
         return id;
@@ -70,11 +71,19 @@ public class TransMessage implements Serializable {
         isSelf = self;
     }
 
-    public Date getOpTime() {
+    public String getOpDate() {
+        return opDate;
+    }
+
+    public void setOpDate(String opDate) {
+        this.opDate = opDate;
+    }
+
+    public String getOpTime() {
         return opTime;
     }
 
-    public void setOpTime(Date opTime) {
+    public void setOpTime(String opTime) {
         this.opTime = opTime;
     }
 

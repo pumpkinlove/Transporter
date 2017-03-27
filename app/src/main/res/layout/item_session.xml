@@ -52,7 +52,7 @@
             android:layout_margin="2dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:textSize="12sp" />
 
     </LinearLayout>

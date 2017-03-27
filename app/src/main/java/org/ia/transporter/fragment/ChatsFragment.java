@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.ia.transporter.R;
 import org.ia.transporter.activity.ChatActivity;
+import org.ia.transporter.activity.FriendRequestActivity;
 import org.ia.transporter.adapter.SessionAdapter;
 import org.ia.transporter.domain.TransMessage;
 import org.ia.transporter.events.MsgArriveEvent;
@@ -76,8 +77,8 @@ public class ChatsFragment extends Fragment {
             public void onItemClick(View view, int position) {
                 TransMessage tMsg = tMsgList.get(position);
                 if (tMsg.getCode() == Constants.TYPE_ADD_REQ) {
-                    Intent i = new Intent(getContext(), ChatActivity.class);
-                    i.putExtra("","");
+                    Intent i = new Intent(getContext(), FriendRequestActivity.class);
+                    i.putExtra("client", tMsg.getFromClient());
                     startActivity(i);
                 } else {
                     Intent i = new Intent(getContext(), ChatActivity.class);

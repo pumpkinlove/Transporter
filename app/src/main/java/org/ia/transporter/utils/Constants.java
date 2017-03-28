@@ -38,4 +38,8 @@ public class Constants {
     public static String DEFAULT_PHOTO;
 
     public static final int SOCKET_TIME_OUT     = 10000;
+
+    public static final float LEFT_VOLUME =1.0f, RIGHT_VOLUME =1.0f;
+    public static final int PRIORITY =1, LOOP = 0;
+    public static final float SOUND_RATE =1.0f;//正常速率
 }

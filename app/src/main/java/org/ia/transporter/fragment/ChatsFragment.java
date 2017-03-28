@@ -20,10 +20,13 @@ import org.ia.transporter.activity.ChatActivity;
 import org.ia.transporter.activity.FriendRequestActivity;
 import org.ia.transporter.adapter.SessionAdapter;
 import org.ia.transporter.domain.TransMessage;
+import org.ia.transporter.events.AddFriendEvent;
 import org.ia.transporter.events.MsgArriveEvent;
 import org.ia.transporter.listener.RecycleViewClickListener;
 import org.ia.transporter.utils.Constants;
+import org.ia.transporter.utils.DBUtil;
 import org.ia.transporter.view.AddDialog;
+import org.xutils.ex.DbException;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
@@ -76,16 +79,18 @@ public class ChatsFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 TransMessage tMsg = tMsgList.get(position);
-                if (tMsg.getCode() == Constants.TYPE_ADD_REQ) {
-                    Intent i = new Intent(getContext(), FriendRequestActivity.class);
-                    i.putExtra("client", tMsg.getFromClient());
-                    startActivity(i);
-                } else {
-                    Intent i = new Intent(getContext(), ChatActivity.class);
-                    i.putExtra("","");
-                    startActivity(i);
+                switch (tMsg.getCode()) {
+                    case Constants.TYPE_ADD_REQ :
+                        Intent i = new Intent(getActivity(), FriendRequestActivity.class);
+                        i.putExtra("tMsg", tMsg);
+                        startActivity(i);
+                        break;
+                    case Constants.TYPE_CHAT :
+                        Intent ic = new Intent(getActivity(), ChatActivity.class);
+                        ic.putExtra("tMsg", tMsg);
+                        startActivity(ic);
+                        break;
                 }
-
             }
 
             @Override
@@ -103,10 +108,29 @@ public class ChatsFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMsgArrive(MsgArriveEvent e) {
-        Log.e("onMsgArriveEvent","ChatsFragment");
-        TransMessage tMsg = e.getTransMessage();
-        tMsgList.add(tMsg);
-        adapter.notifyDataSetChanged();
+        try {
+            Log.e("onMsgArriveEvent","ChatsFragment");
+            TransMessage tMsg = e.getTransMessage();
+            DBUtil.db.save(tMsg);
+            switch (tMsg.getCode()) {
+                case Constants.TYPE_ADD_RSP :
+                    if ("同意".equals(tMsg.getMessage())) {
+                        bus.post(new AddFriendEvent(tMsg.getFromClient()));
+                    } else if ("拒绝".equals(tMsg.getMessage())) {
+
+                    }
+                    break;
+            }
+            for (int i=0; i<tMsgList.size(); i++) {
+                if (tMsgList.get(i).getFromIp().equals(tMsg.getFromIp())) {
+                    tMsgList.remove(i);
+                }
+            }
+            tMsgList.add(tMsg);
+            adapter.notifyDataSetChanged();
+        } catch (DbException e1) {
+            e1.printStackTrace();
+        }
     }
 
 }

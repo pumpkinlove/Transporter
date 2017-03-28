@@ -130,6 +130,7 @@
         android:layout_weight="2">
 
         <TextView
+            android:id="@+id/tv_agree"
             android:clickable="true"
             android:layout_width="0dp"
             android:layout_height="45dp"
@@ -141,6 +142,7 @@
             android:textColor="@color/white" />
 
         <TextView
+            android:id="@+id/tv_refuse"
             android:clickable="true"
             android:layout_width="0dp"
             android:layout_height="45dp"
@@ -148,7 +150,7 @@
             android:layout_weight="1"
             android:background="@drawable/band_stroke_bg"
             android:gravity="center"
-            android:text="忽略"
+            android:text="拒绝"
             android:textColor="@color/blue_band_dark3" />
 
     </LinearLayout>

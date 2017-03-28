@@ -23,7 +23,6 @@ public class GroupFriendAdapter extends BaseExpandableListAdapter {
 
     private List<Group> groupList;
     private Context context;
-    private View.OnClickListener clientClickListener;
 
     public GroupFriendAdapter() {
     }
@@ -65,49 +64,50 @@ public class GroupFriendAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean b, View view, ViewGroup viewGroup) {
-        if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.item_group, null);
+    public View getGroupView(int groupPosition, boolean b, View convertView, ViewGroup viewGroup) {
+        View view = null;
+        GroupHolder groupholder = null;
+        if (convertView != null) {
+            view = convertView;
+            groupholder = (GroupHolder) view.getTag();
+        } else {
+            view = View.inflate(context, R.layout.item_group, null);
+            groupholder = new GroupHolder();
+            groupholder.tv_group_name = (TextView) view.findViewById(R.id.tv_group_name);
+            groupholder.tv_onLine_count = (TextView) view.findViewById(R.id.tv_onLine_count);
+            view.setTag(groupholder);
         }
-        view.setTag(R.layout.item_group, groupPosition);
-        view.setTag(R.layout.item_client, -1);
-        TextView tv_group_name = (TextView) view.findViewById(R.id.tv_group_name);
-        TextView tv_onLine_count = (TextView) view.findViewById(R.id.tv_onLine_count);
-        tv_group_name.setText(groupList.get(groupPosition).getGroupName());
-        tv_onLine_count.setText(groupList.get(groupPosition).getOnLineCount() + "/" + groupList.get(groupPosition).getClientList().size());
+        groupholder.tv_group_name.setText(groupList.get(groupPosition).getGroupName());
+        groupholder.tv_onLine_count.setText(groupList.get(groupPosition).getOnLineCount() + "/" + groupList.get(groupPosition).getClientList().size());
         return view;
     }
 
     @Override
-    public View getChildView(int groupPosition, int clientPosition, boolean b, View view, ViewGroup viewGroup) {
-        if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.item_client, null);
-        }
+    public View getChildView(int groupPosition, int clientPosition, boolean b, View convertView, ViewGroup viewGroup) {
         Client client = groupList.get(groupPosition).getClientList().get(clientPosition);
-        view.setTag(R.layout.item_group, groupPosition);
-        view.setTag(R.layout.item_client, clientPosition);
-        TextView tv_client_name = (TextView) view.findViewById(R.id.tv_client_name);
-
-        if (client.getPhoto() != null && client.getPhoto().length() > 0) {
-            ImageView iv_client_photo = (ImageView) view.findViewById(R.id.iv_client_photo);
-            iv_client_photo.setImageBitmap(Base64Util.stringtoBitmap(client.getPhoto()));
+        View view = null;
+        ChildHolder childholder = null;
+        if (convertView != null) {
+            view = convertView;
+            childholder = (ChildHolder) view.getTag();
+        } else {
+            view = View.inflate(context, R.layout.item_client, null);
+            childholder = new ChildHolder();
+            childholder.tv_client_name = (TextView) view.findViewById(R.id.tv_client_name);
+            childholder.tv_client_ip = (TextView) view.findViewById(R.id.tv_client_ip);
+            childholder.iv_client_photo = (ImageView) view.findViewById(R.id.iv_client_photo);
+            view.setTag(childholder);
         }
+        if (client.getPhoto() != null && client.getPhoto().length() > 0) {
+            childholder.iv_client_photo.setImageBitmap(Base64Util.stringtoBitmap(client.getPhoto()));
+        }
+        childholder.tv_client_name.setText(groupList.get(groupPosition).getClientList().get(clientPosition).getName());
+        childholder.tv_client_ip.setText(groupList.get(groupPosition).getClientList().get(clientPosition).getIp());
 
-        tv_client_name.setText(groupList.get(groupPosition).getClientList().get(clientPosition).getName());
-        tv_client_name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (clientClickListener != null) {
-                    clientClickListener.onClick(view);
-                }
-            }
-        });
         return view;
     }
 
@@ -132,11 +132,17 @@ public class GroupFriendAdapter extends BaseExpandableListAdapter {
         this.context = context;
     }
 
-    public View.OnClickListener getClientClickListener() {
-        return clientClickListener;
+    static class GroupHolder{
+        TextView tv_group_name;
+        TextView tv_onLine_count;
     }
 
-    public void setClientClickListener(View.OnClickListener clientClickListener) {
-        this.clientClickListener = clientClickListener;
+    static class ChildHolder{
+        ImageView iv_client_photo;
+        TextView tv_client_name;
+        TextView tv_client_ip;
     }
+
+
+
 }

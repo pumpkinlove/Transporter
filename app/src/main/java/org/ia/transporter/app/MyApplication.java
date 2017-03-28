@@ -1,6 +1,7 @@
 package org.ia.transporter.app;
 
 import android.app.Application;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -23,7 +24,9 @@ import org.ia.transporter.events.ToastEvent;
 import org.ia.transporter.utils.Base64Util;
 import org.ia.transporter.utils.Constants;
 import org.ia.transporter.utils.DBUtil;
+import org.ia.transporter.utils.ImageUtil;
 import org.ia.transporter.utils.NetUtil;
+import org.xutils.ex.DbException;
 import org.xutils.x;
 
 import java.io.BufferedReader;
@@ -49,10 +52,6 @@ public class MyApplication extends Application {
     private SoundPool soundPool;
     private Map<Integer, Integer> soundMap;
 
-    public static final float LEFT_VOLUME =1.0f, RIGHT_VOLUME =1.0f;
-    public static final int PRIORITY =1, LOOP = 0;
-    public static final float SOUND_RATE =1.0f;//正常速率
-
     private ServerSocket fileServer;
     private ServerSocket msgServer;
     public static Client me;
@@ -73,7 +72,8 @@ public class MyApplication extends Application {
 
     private void init() {
         try {
-            Constants.DEFAULT_PHOTO = Base64Util.bitmaptoString(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.transport);
+            Constants.DEFAULT_PHOTO = Base64Util.bitmaptoString(bitmap);
             bus = EventBus.getDefault();
             bus.register(this);
             fileServer = new ServerSocket(Constants.FILE_PORT);
@@ -103,13 +103,21 @@ public class MyApplication extends Application {
     }
 
     private void initMe() {
-        me = new Client();
-        me.setId(1);
-        me.setIp(NetUtil.getLocalIpAddress(this));
-        me.setName("我");
-        me.setState(Constants.CLIENT_CONNECTED);
-        me.setPhoto(Constants.DEFAULT_PHOTO);
-        me.setGroupId(0);
+        try {
+            me = DBUtil.db.findFirst(Client.class);
+            if (me == null ) {
+                me = new Client();
+                me.setId(1);
+                me.setIp(NetUtil.getLocalIpAddress(this));
+                me.setName("默认名称");
+                me.setState(Constants.CLIENT_CONNECTED);
+                me.setPhoto(Constants.DEFAULT_PHOTO);
+                me.setGroupId(0);
+                DBUtil.db.saveBindingId(me);
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -157,14 +165,11 @@ public class MyApplication extends Application {
         Log.e("onMsgArriveEvent","MyApplication");
         TransMessage tMsg = e.getTransMessage();
         switch (tMsg.getCode()) {
-            case Constants.TYPE_ADD_RSP:
-
-                break;
         }
     }
 
     private void ring() {
-        soundPool.play(soundMap.get(1), LEFT_VOLUME, RIGHT_VOLUME, PRIORITY, LOOP, SOUND_RATE);
+        soundPool.play(soundMap.get(1), Constants.LEFT_VOLUME, Constants.RIGHT_VOLUME, Constants.PRIORITY, Constants.LOOP, Constants.SOUND_RATE);
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)

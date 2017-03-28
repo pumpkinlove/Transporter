@@ -1,6 +1,7 @@
 package org.ia.transporter.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -14,10 +15,14 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.ia.transporter.R;
+import org.ia.transporter.activity.ChatActivity;
 import org.ia.transporter.adapter.GroupFriendAdapter;
 import org.ia.transporter.domain.Client;
 import org.ia.transporter.domain.Group;
 import org.ia.transporter.domain.TransMessage;
+import org.ia.transporter.events.AddFriendEvent;
+import org.ia.transporter.utils.Constants;
+import org.ia.transporter.utils.DBUtil;
 import org.ia.transporter.view.AddDialog;
 import org.xutils.ex.DbException;
 import org.xutils.view.annotation.Event;
@@ -80,6 +85,24 @@ public class FriendsFragment extends Fragment {
 
         addDialog = new AddDialog();
         addDialog.setCancelable(false);
+
+        elv_friend.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+                return false;
+            }
+        });
+
+        elv_friend.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
+                Client target = groupList.get(i).getClientList().get(i1);
+                Intent intent = new Intent(getContext(), ChatActivity.class);
+                intent.putExtra("client", target);
+                startActivity(intent);
+                return false;
+            }
+        });
     }
 
     @Event(R.id.tv_head_right)
@@ -100,10 +123,17 @@ public class FriendsFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(TransMessage e) {
-        Log.e("onMessageEvent","FriendsFragment");
-
+    public void onAddFriendEvent(AddFriendEvent e) {
+        try {
+            Client newFriend = e.getClient();
+            DBUtil.db.save(newFriend);
+            groupList.get(newFriend.getGroupId()-1).getClientList().add(newFriend);
+            adapter.notifyDataSetChanged();
+        } catch (DbException e1) {
+            e1.printStackTrace();
+        }
     }
+
 
     @Override
     public void onDestroy() {

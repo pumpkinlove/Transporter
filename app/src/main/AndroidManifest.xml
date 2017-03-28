@@ -51,11 +51,6 @@
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.ChatActivity" />
 
-        <service
-            android:name=".SocketService"
-            android:enabled="true"
-            android:exported="true" />
-
         <activity android:name=".activity.FriendRequestActivity"></activity>
     </application>
 

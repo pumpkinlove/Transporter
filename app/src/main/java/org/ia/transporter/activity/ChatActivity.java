@@ -23,7 +23,9 @@ import org.ia.transporter.domain.TransMessage;
 import org.ia.transporter.events.SocketEvent;
 import org.ia.transporter.events.ToastEvent;
 import org.ia.transporter.utils.Constants;
+import org.ia.transporter.utils.DBUtil;
 import org.ia.transporter.utils.FileUtil;
+import org.xutils.ex.DbException;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
@@ -61,7 +63,7 @@ public class ChatActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);      //全屏显示
+        initWindow();
         x.view().inject(this);
 
         initData();
@@ -71,10 +73,18 @@ public class ChatActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        bus = EventBus.getDefault();
-        client = (Client) getIntent().getSerializableExtra("client");
-        messageList = new ArrayList<>();
-        adapter = new ChatAdapter(messageList, this);
+        try {
+            bus = EventBus.getDefault();
+            client = (Client) getIntent().getSerializableExtra("client");
+            messageList = DBUtil.db.selector(TransMessage.class)
+                    .where("fromIp", "==", client.getIp())
+                    .or("toIp", "==", client.getIp())
+                    .and("code", "==", Constants.TYPE_CHAT)
+                    .findAll();
+            adapter = new ChatAdapter(messageList, this);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

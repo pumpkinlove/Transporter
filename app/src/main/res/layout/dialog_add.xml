@@ -14,31 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="50dp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="45dp">
-
-        <TextView
-            android:background="@color/white"
-            android:textColor="@color/dark"
-            android:text="姓名"
-            android:paddingStart="14dp"
-            android:gravity="start|center_vertical"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
-
-        <EditText
-            android:id="@+id/et_name"
-            android:background="@drawable/white_bg_pink_ripple"
-            android:paddingEnd="14dp"
-            android:gravity="end|center_vertical"
-            android:layout_weight="2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
-
     <View
         android:background="@color/gray_light"
         android:layout_width="match_parent"

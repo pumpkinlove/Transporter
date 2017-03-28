@@ -39,7 +39,6 @@ import java.util.List;
 
 public class AddDialog extends DialogFragment {
 
-    @ViewInject(R.id.et_name)       private EditText et_name;
     @ViewInject(R.id.et_ip)         private EditText et_ip;
     @ViewInject(R.id.s_group)       private Spinner s_group;
 
@@ -48,7 +47,6 @@ public class AddDialog extends DialogFragment {
     private GroupSpinnerAdapter adapter;
 
     public Client getTargetClient() {
-        targetClient.setName(et_name.getText().toString());
         targetClient.setIp(et_ip.getText().toString());
         targetClient.setGroupName(((Group)s_group.getSelectedItem()).getGroupName());
         targetClient.setGroupId(((Group)s_group.getSelectedItem()).getId());
@@ -100,9 +98,13 @@ public class AddDialog extends DialogFragment {
 
     @Event(R.id.tv_confirm)
     private void onConfirmClicked(View view) {
+
+        // TODO: 2017/3/28 0028 重复添加判断
+        
         TransMessage tMsg = new TransMessage();
         tMsg.setCode(Constants.TYPE_ADD_REQ);
         tMsg.setFromClient(MyApplication.me);
+        tMsg.setFromIp(MyApplication.me.getIp());
         tMsg.setToIP(et_ip.getText().toString());
         tMsg.setToClient(getTargetClient());
         tMsg.setOpDate(DateUtil.toMonthDay(new Date()));

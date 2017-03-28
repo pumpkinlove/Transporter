@@ -18,7 +18,7 @@ public class DBUtil {
     public static void initDB() {
         File file = new File(Environment.getExternalStorageDirectory().getPath());          //安卓根目录
         DbManager.DaoConfig daoConfig = new DbManager.DaoConfig()
-                .setDbName("ic_launcher.db")    //创建数据库的名称
+                .setDbName("transporter.db")    //创建数据库的名称
                 .setDbVersion(1)                //数据库版本号
                 .setDbDir(file)                 //设置数据库db文件路径
                 .setAllowTransaction(true)      //开启事务

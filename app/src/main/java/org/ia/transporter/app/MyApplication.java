@@ -162,10 +162,6 @@ public class MyApplication extends Application {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMsgArriveEvent(MsgArriveEvent e) {
         ring();
-        Log.e("onMsgArriveEvent","MyApplication");
-        TransMessage tMsg = e.getTransMessage();
-        switch (tMsg.getCode()) {
-        }
     }
 
     private void ring() {
@@ -178,6 +174,8 @@ public class MyApplication extends Application {
         Socket socket = new Socket();
         try {
             TransMessage trans = e.getTransMessage();
+            trans.setSelf(true);
+            DBUtil.db.save(trans);
             socket.connect(new InetSocketAddress(trans.getToIP(), Constants.MSG_PORT), Constants.SOCKET_TIME_OUT);
             ou = socket.getOutputStream();
             ou.write(g.toJson(trans).getBytes("utf8"));

@@ -18,12 +18,17 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.ia.transporter.R;
 import org.ia.transporter.adapter.ChatAdapter;
+import org.ia.transporter.app.MyApplication;
 import org.ia.transporter.domain.Client;
 import org.ia.transporter.domain.TransMessage;
+import org.ia.transporter.events.ChatEvent;
+import org.ia.transporter.events.MsgArriveEvent;
+import org.ia.transporter.events.MsgSendEvent;
 import org.ia.transporter.events.SocketEvent;
 import org.ia.transporter.events.ToastEvent;
 import org.ia.transporter.utils.Constants;
 import org.ia.transporter.utils.DBUtil;
+import org.ia.transporter.utils.DateUtil;
 import org.ia.transporter.utils.FileUtil;
 import org.xutils.ex.DbException;
 import org.xutils.view.annotation.ContentView;
@@ -38,6 +43,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.ia.transporter.app.MyApplication.me;
@@ -79,9 +85,10 @@ public class ChatActivity extends BaseActivity {
             messageList = DBUtil.db.selector(TransMessage.class)
                     .where("fromIp", "==", client.getIp())
                     .or("toIp", "==", client.getIp())
-                    .and("code", "==", Constants.TYPE_CHAT)
+                    .where("code", "==", Constants.TYPE_CHAT)
                     .findAll();
             adapter = new ChatAdapter(messageList, this);
+
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -92,16 +99,26 @@ public class ChatActivity extends BaseActivity {
         tv_head_middle.setText(client.getName());
         tv_head_left.setVisibility(View.VISIBLE);
         tv_head_right.setVisibility(View.VISIBLE);
+        tv_head_right.setText(" + ");
 
         rv_chat.setAdapter(adapter);
         rv_chat.setLayoutManager(new LinearLayoutManager(this));
         et_send_message.setOnEditorActionListener(listener);
+        if (messageList.size() > 0) {
+            rv_chat.smoothScrollToPosition(messageList.size()-1);
+        }
     }
 
     private EditText.OnEditorActionListener listener = new EditText.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
             if (i == EditorInfo.IME_ACTION_DONE) {
+                try {
+                    sendMessage(et_send_message.getText().toString());
+                    et_send_message.setText("");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             return false;
         }
@@ -111,10 +128,6 @@ public class ChatActivity extends BaseActivity {
     protected void onDestroy() {
         bus.unregister(this);
         super.onDestroy();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onMessageEvent(SocketEvent e) {
     }
 
     @Event(R.id.tv_head_right)
@@ -150,9 +163,42 @@ public class ChatActivity extends BaseActivity {
 
     }
 
-    /** 发送消息 */
-    private void sendMessage(TransMessage message) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onChatEvent(ChatEvent e) {
+        try {
+            messageList = DBUtil.db.selector(TransMessage.class)
+                    .where("fromIp", "==", client.getIp())
+                    .or("toIp", "==", client.getIp())
+                    .where("code", "==", Constants.TYPE_CHAT)
+                    .findAll();
+            adapter.setMessageList(messageList);
+            adapter.notifyDataSetChanged();
+            if (messageList.size() > 0) {
+                rv_chat.smoothScrollToPosition(messageList.size()-1);
+            }
 
+        } catch (DbException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+
+    /** 发送消息 */
+    private void sendMessage(String content) throws Exception {
+        TransMessage t = new TransMessage();
+        t.setCode(Constants.TYPE_CHAT);
+        t.setMessage(content);
+        t.setToClient(client);
+        t.setFromClient(MyApplication.me);
+        t.setToIP(client.getIp());
+        t.setFromIp(MyApplication.me.getIp());
+        t.setOpDate(DateUtil.toMonthDay(new Date()));
+        t.setOpTime(DateUtil.toHourMinString(new Date()));
+        t.setSelf(true);
+        bus.post(new MsgSendEvent(t));
+        messageList.add(t);
+        adapter.notifyDataSetChanged();
+        rv_chat.smoothScrollToPosition(messageList.size()-1);
     }
 
     /** 发送文件 */

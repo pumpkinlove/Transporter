@@ -21,6 +21,7 @@ import org.ia.transporter.activity.FriendRequestActivity;
 import org.ia.transporter.adapter.SessionAdapter;
 import org.ia.transporter.domain.TransMessage;
 import org.ia.transporter.events.AddFriendEvent;
+import org.ia.transporter.events.ChatEvent;
 import org.ia.transporter.events.MsgArriveEvent;
 import org.ia.transporter.listener.RecycleViewClickListener;
 import org.ia.transporter.utils.Constants;
@@ -87,7 +88,7 @@ public class ChatsFragment extends Fragment {
                         break;
                     case Constants.TYPE_CHAT :
                         Intent ic = new Intent(getActivity(), ChatActivity.class);
-                        ic.putExtra("tMsg", tMsg);
+                        ic.putExtra("client", tMsg.getFromClient());
                         startActivity(ic);
                         break;
                 }
@@ -111,14 +112,17 @@ public class ChatsFragment extends Fragment {
         try {
             Log.e("onMsgArriveEvent","ChatsFragment");
             TransMessage tMsg = e.getTransMessage();
+            tMsg.setSelf(false);
             DBUtil.db.save(tMsg);
             switch (tMsg.getCode()) {
                 case Constants.TYPE_ADD_RSP :
                     if ("同意".equals(tMsg.getMessage())) {
                         bus.post(new AddFriendEvent(tMsg.getFromClient()));
                     } else if ("拒绝".equals(tMsg.getMessage())) {
-
                     }
+                    break;
+                case Constants.TYPE_CHAT :
+                    bus.post(new ChatEvent());
                     break;
             }
             for (int i=0; i<tMsgList.size(); i++) {

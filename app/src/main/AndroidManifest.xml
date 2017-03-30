@@ -50,8 +50,8 @@
         </activity>
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.ChatActivity" />
-
-        <activity android:name=".activity.FriendRequestActivity"></activity>
+        <activity android:name=".activity.FriendRequestActivity" />
+        <activity android:name=".activity.GroupManageActivity"></activity>
     </application>
 
 </manifest>

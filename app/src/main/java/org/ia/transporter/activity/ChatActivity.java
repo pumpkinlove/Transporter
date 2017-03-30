@@ -114,8 +114,10 @@ public class ChatActivity extends BaseActivity {
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
             if (i == EditorInfo.IME_ACTION_DONE) {
                 try {
-                    sendMessage(et_send_message.getText().toString());
-                    et_send_message.setText("");
+                    if (et_send_message.getText().length() > 0) {
+                        sendMessage(et_send_message.getText().toString());
+                        et_send_message.setText("");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

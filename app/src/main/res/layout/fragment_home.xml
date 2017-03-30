@@ -17,26 +17,54 @@
         android:layout_height="1px"/>
 
     <LinearLayout
+        android:id="@+id/ll_me"
+        android:clickable="true"
+        android:background="@drawable/white_bg_pink_ripple"
         android:orientation="horizontal"
-        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="80dp">
 
         <ImageView
+            android:background="@drawable/head_pic_bg"
             android:id="@+id/iv_me_photo"
             android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+            android:padding="1dp"
+            android:layout_width="70dp"
             android:layout_height="match_parent" />
 
-        <TextView
-            android:id="@+id/tv_me_name"
-            android:textColor="@color/dark"
-            android:padding="5dp"
-            android:textSize="24sp"
-            android:layout_weight="3"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_me_name"
+                android:textColor="@color/dark"
+                android:padding="5dp"
+                android:textSize="20sp"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" />
+
+            <TextView
+                android:id="@+id/tv_me_ip"
+                android:textColor="@color/blue_band_dark3"
+                android:padding="5dp"
+                android:textSize="16sp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_margin="10dp"
+            android:src="@mipmap/right_arrow"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
@@ -46,9 +74,8 @@
         android:layout_height="1px"/>
 
     <View
-        android:layout_weight="2"
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:layout_height="50dp"/>
 
     <View
         android:background="@color/gray_light"
@@ -56,13 +83,17 @@
         android:layout_height="1px"/>
 
     <LinearLayout
+        android:id="@+id/ll_group_manage"
+        android:clickable="true"
         android:background="@drawable/white_bg_pink_ripple"
         android:layout_width="match_parent"
         android:layout_height="50dp">
 
         <TextView
+            android:drawableStart="@mipmap/user_feedback"
+            android:drawablePadding="8dp"
             android:paddingStart="15dp"
-            android:text="IP 地址"
+            android:text="分组管理"
             android:textColor="@color/dark"
             android:textSize="16sp"
             android:gravity="center_vertical|start"
@@ -79,6 +110,13 @@
             android:layout_width="0dp"
             android:layout_height="match_parent" />
 
+        <ImageView
+            android:layout_margin="10dp"
+            android:src="@mipmap/right_arrow"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
     <View
@@ -87,13 +125,17 @@
         android:layout_height="1px"/>
 
     <LinearLayout
+        android:id="@+id/ll_save_path"
+        android:clickable="true"
         android:background="@drawable/white_bg_pink_ripple"
         android:layout_width="match_parent"
         android:layout_height="50dp">
 
         <TextView
+            android:drawableStart="@mipmap/user_about"
+            android:drawablePadding="8dp"
+            android:text="存储路径"
             android:paddingStart="15dp"
-            android:text=""
             android:textColor="@color/dark"
             android:textSize="16sp"
             android:gravity="center_vertical|start"
@@ -102,12 +144,21 @@
             android:layout_height="match_parent" />
 
         <TextView
-            android:textColor="@color/blue_band_dark2"
-            android:textSize="16sp"
-            android:gravity="center_vertical|end"
-            android:layout_weight="1"
+            android:id="@+id/textView"
             android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|end"
+            android:paddingEnd="15dp"
+            android:textColor="@color/blue_band_dark2"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:layout_margin="10dp"
+            android:src="@mipmap/right_arrow"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
@@ -117,6 +168,7 @@
         android:layout_height="1px"/>
 
     <LinearLayout
+        android:clickable="true"
         android:background="@drawable/white_bg_pink_ripple"
         android:layout_width="match_parent"
         android:layout_height="50dp">
@@ -145,34 +197,7 @@
         android:layout_height="1px"/>
 
     <LinearLayout
-        android:background="@drawable/white_bg_pink_ripple"
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
-
-        <TextView
-            android:textColor="@color/dark"
-            android:textSize="16sp"
-            android:gravity="center_vertical|start"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
-
-        <TextView
-            android:textColor="@color/blue_band_dark2"
-            android:textSize="16sp"
-            android:gravity="center_vertical|end"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
-
-    <View
-        android:background="@color/gray_light"
-        android:layout_width="match_parent"
-        android:layout_height="1px"/>
-
-    <LinearLayout
+        android:clickable="true"
         android:background="@drawable/white_bg_pink_ripple"
         android:layout_width="match_parent"
         android:layout_height="50dp">

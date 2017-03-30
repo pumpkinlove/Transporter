@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.ia.transporter.R;
@@ -98,15 +99,26 @@ public class AddDialog extends DialogFragment {
 
     @Event(R.id.tv_confirm)
     private void onConfirmClicked(View view) {
+        getTargetClient();
+        try {
+            List<Client> friends = DBUtil.db.findAll(Client.class);
+            for (Client c : friends) {
+                if (c.getIp().equals(targetClient.getIp())) {
+                    Toast.makeText(getActivity(), "该IP已经是你的好友", Toast.LENGTH_SHORT).show();
+                    et_ip.setTextColor(getResources().getColor(R.color.red));
+                    return;
+                }
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
 
-        // TODO: 2017/3/28 0028 重复添加判断
-        
         TransMessage tMsg = new TransMessage();
         tMsg.setCode(Constants.TYPE_ADD_REQ);
         tMsg.setFromClient(MyApplication.me);
         tMsg.setFromIp(MyApplication.me.getIp());
         tMsg.setToIP(et_ip.getText().toString());
-        tMsg.setToClient(getTargetClient());
+        tMsg.setToClient(targetClient);
         tMsg.setOpDate(DateUtil.toMonthDay(new Date()));
         tMsg.setOpTime(DateUtil.toHourMinString(new Date()));
         tMsg.setMessage("好友请求");
@@ -119,4 +131,8 @@ public class AddDialog extends DialogFragment {
         dismiss();
     }
 
+    @Event(R.id.et_ip)
+    private void onEditIp(View view) {
+        et_ip.setTextColor(getResources().getColor(R.color.dark));
+    }
 }

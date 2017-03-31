@@ -19,6 +19,7 @@ import org.ia.transporter.activity.ChatActivity;
 import org.ia.transporter.adapter.GroupFriendAdapter;
 import org.ia.transporter.domain.Client;
 import org.ia.transporter.domain.Group;
+import org.ia.transporter.domain.GroupRefreshEvent;
 import org.ia.transporter.domain.TransMessage;
 import org.ia.transporter.events.AddFriendEvent;
 import org.ia.transporter.utils.Constants;
@@ -134,6 +135,16 @@ public class FriendsFragment extends Fragment {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshEvent(GroupRefreshEvent e) {
+        try {
+            loadList();
+            adapter.setGroupList(groupList);
+            adapter.notifyDataSetChanged();
+        } catch (DbException e1) {
+            e1.printStackTrace();
+        }
+    }
 
     @Override
     public void onDestroy() {
